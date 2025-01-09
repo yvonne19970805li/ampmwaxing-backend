@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TestController;
+use App\http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +13,18 @@ use App\Http\Controllers\TestController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//後面放的是控制器不是函式，建議寫法會將邏輯彙整直接放在控制器內，以便維護，控制器也可以單獨測試或是重用
+Route::get('/', [BlogController::class, 'indexPage']);
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['prefix' => 'user'], function(){
+    //使用者驗證同樣的網址導向可以寫在一起
+    Route::group(['prpefix'=>'auth'],function(){
+        Route::get('/sign-up',[BlogController::class, 'signUpPage']);
+        Route::post('/sign-up', [BlogController::class, 'signUpProcess']);
+        Route::get('/sign-in', [BlogController::class, 'signInPage']);
+        Route::post('/sign-in', [BlogController::class, 'signInProcess']);
+        Route::get('/sign-out', [BlogController::class, 'signOut']);
+    });
 });
 
-Route::get('/test', [TestController::class, 'Test']);
+?>
